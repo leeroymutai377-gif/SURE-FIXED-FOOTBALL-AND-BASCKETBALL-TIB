@@ -149,13 +149,20 @@ if st.session_state.authenticated and st.session_state.user_role == "Admin":
                 st.rerun()
                 
     st.markdown("---")
-    st.markdown("### 🔮 Phase 2: Ingest Upcoming Fixtures Matrix (>200 Games)")
-    c_fb, c_ms = st.columns(2)
-    with c_fb:
-        if st.button("Ingest Upcoming Global Football Data"):
-            with st.spinner("Compiling upcoming football matrices..."):
-                f_games = fetch_global_fixtures = fetch_global_football_fixtures(api_token)
-                for fg in f_games:
-                    hp, ap = run_ai_prediction(7, 5)
-                    st.session_state.posted_predictions.append({
-                        "sport": fg["sport"], "country": fg["country"], "venue": fg["venue"],
+st.markdown("### ⚽ Phase 2: Ingest Upcoming Fixtures Matrix (>200 Games)")
+c_fb, c_ms = st.columns(2)
+with c_fb:
+    if st.button("Ingest Upcoming Global Football Data"):
+        with st.spinner("Compiling upcoming football matrices..."):
+            f_games = fetch_global_football_fixtures(api_token)
+            for fg in f_games:
+                hp, ap = run_ai_prediction(7, 5)
+                st.session_state.posted_predictions.append({
+                    "sport": fg["sport"],
+                    "country": fg["country"],
+                    "venue": fg["venue"],
+                    "home": fg["home"],
+                    "away": fg["away"],
+                    "result_or_pick": f"Home Win ({hp}%)",
+                    "type": "Live Match Data"
+                })
