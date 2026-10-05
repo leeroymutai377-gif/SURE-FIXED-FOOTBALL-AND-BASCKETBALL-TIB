@@ -2,7 +2,9 @@ import pandas as pd
 import requests
 import streamlit as st
 
-# 1. ENHANCED SEARCH ENGINE OPTIMIZATION (SEO) & PAGE SETUP
+# -----------------------------------------------------------------------------
+# 1. ENHANCED SEARCH ENGINE OPTIMIZATION (SEO) & GOOGLE ANALYTICS VERIFICATION
+# -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="LEEROY CORRECT FIXED | Global Sports AI Predictions & Analytics",
     page_icon="🏆",
@@ -10,10 +12,22 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Inject meta tags for Google, Bing, and Social Crawlers + Google Site Verification
+# Replace G-XXXXXXXXXX with your actual Google Analytics Measurement ID
+GA_MEASUREMENT_ID = "G-XXXXXXXXXX"
+
+# Inject Google Analytics tracking script into the head block
 st.markdown(
-    """
+    f"""
     <head>
+        <!-- Google Analytics (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){{dataLayer.push(arguments);}}
+          gtag('js', new Date());
+
+          gtag('config', '{GA_MEASUREMENT_ID}');
+        </script>
         <meta name="google-site-verification" content="n3VBV1TErXm35GTl29VcMovls3rZ2o5UXQjG4x5v0mo" />
         <meta name="description" content="LEEROY CORRECT FIXED is a premier AI-driven sports prediction engine providing automated match forecasts, historical archives, and custom match probability analysis for Football, Basketball, Tennis, and Rugby." />
         <meta name="keywords" content="sports predictions, football AI, basketball betting picks, sports analytics, match predictor, LEEROY CORRECT FIXED, sports prediction model" />
@@ -32,7 +46,9 @@ TODAY_STR = "2026-10-05"
 # User Credentials Database
 USER_DB = {"admin": {"password": "adminpassword123", "role": "Admin"}}
 
+# -----------------------------------------------------------------------------
 # 2. SESSION STATE INITIALIZATION
+# -----------------------------------------------------------------------------
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
     st.session_state.user_role = "Visitor"
@@ -129,7 +145,9 @@ if "historical_archive" not in st.session_state:
     ]
 
 
+# -----------------------------------------------------------------------------
 # 3. CORE AI PREDICTION CALCULATION ENGINE
+# -----------------------------------------------------------------------------
 def run_ai_prediction(home_weight, away_weight):
     total = home_weight + away_weight if (home_weight + away_weight) > 0 else 1
     home_prob = round((home_weight / total) * 100, 1)
@@ -137,7 +155,9 @@ def run_ai_prediction(home_weight, away_weight):
     return home_prob, away_prob
 
 
+# -----------------------------------------------------------------------------
 # 4. SIDEBAR NAVIGATION & AUTHENTICATION
+# -----------------------------------------------------------------------------
 st.sidebar.title("Navigation")
 menu = st.sidebar.radio(
     "Select Option",
@@ -174,7 +194,9 @@ else:
         st.rerun()
 
 
+# -----------------------------------------------------------------------------
 # 5. MAIN PAGE CONTENT
+# -----------------------------------------------------------------------------
 st.title("🏆 LEEROY CORRECT FIXED — AI Sports Analytics & Match Predictions")
 st.markdown(
     "Welcome to **LEEROY CORRECT FIXED**, an advanced artificial intelligence platform delivering daily data-driven match probability forecasts, historical team statistics, and predictive modeling for major sports leagues worldwide."
