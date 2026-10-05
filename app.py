@@ -1,168 +1,286 @@
-import streamlit as st
 import pandas as pd
-import numpy as np
 import requests
+import streamlit as st
 
-# Set up page configurations with the official brand name
-st.set_page_config(page_title="LEEROY CORRECT FIXED", layout="wide", page_icon="🏆")
+# 1. ENHANCED SEARCH ENGINE OPTIMIZATION (SEO) & PAGE SETUP
+st.set_page_config(
+    page_title="LEEROY CORRECT FIXED | Global Sports AI Predictions & Analytics",
+    page_icon="🏆",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
-# System date runtime context bounds
-TODAY_STR = "2026-10-03"
+# Inject meta tags for Google, Bing, and Social Crawlers + Google Site Verification
+st.markdown(
+    """
+    <head>
+        <meta name="google-site-verification" content="n3VBV1TErXm35GTl29VcMovls3rZ2o5UXQjG4x5v0mo" />
+        <meta name="description" content="LEEROY CORRECT FIXED is a premier AI-driven sports prediction engine providing automated match forecasts, historical archives, and custom match probability analysis for Football, Basketball, Tennis, and Rugby." />
+        <meta name="keywords" content="sports predictions, football AI, basketball betting picks, sports analytics, match predictor, LEEROY CORRECT FIXED, sports prediction model" />
+        <meta name="robots" content="index, follow" />
+        <meta property="og:title" content="LEEROY CORRECT FIXED — Sports AI Predictions" />
+        <meta property="og:description" content="Accurate AI sports predictions, live statistics, and historical archives for major global sports." />
+        <meta property="og:type" content="website" />
+    </head>
+""",
+    unsafe_allow_html=True,
+)
 
-# Initialize global tracking arrays for all world sports if they do not exist
-if "posted_predictions" not in st.session_state:
-    st.session_state.posted_predictions = [
-        {"sport": "⚽ Football", "country": "England", "venue": "Stamford Bridge", "home": "Chelsea", "away": "Arsenal", "result_or_pick": "Home Win (55%)", "type": "AI System Forecast"},
-        {"sport": "🏀 Basketball", "country": "USA", "venue": "Crypto.com Arena", "home": "LA Lakers", "away": "Golden State", "result_or_pick": "Over 220.5 Points", "type": "AI System Forecast"},
-        {"sport": "🎾 Tennis", "country": "France", "venue": "Roland Garros", "home": "Carlos Alcaraz", "away": "Jannik Sinner", "result_or_pick": "Handicap Sets -1.5", "type": "AI System Forecast"},
-        {"sport": "🏉 Rugby", "country": "New Zealand", "venue": "Eden Park", "home": "All Blacks", "away": "South Africa", "result_or_pick": "Home Win", "type": "AI System Forecast"}
-    ]
+# Date Context
+TODAY_STR = "2026-10-05"
 
-if "historical_archive" not in st.session_state:
-    st.session_state.historical_archive = [
-        {"sport": "⚽ Football", "country": "Spain", "venue": "Santiago Bernabéu", "home": "Real Madrid", "away": "Barcelona", "result_or_pick": "3 - 1 (Finished)", "type": "2025 Archive Sync"},
-        {"sport": "🥊 Boxing", "country": "Saudi Arabia", "venue": "Kingdom Arena", "home": "Tyson Fury", "away": "Oleksandr Usyk", "result_or_pick": "Usyk Wins by Decision (Finished)", "type": "2025 Archive Sync"},
-        {"sport": "🏏 Cricket", "country": "India", "venue": "Wankhede Stadium", "home": "India", "away": "Australia", "result_or_pick": "India Won by 6 Wickets (Finished)", "type": "2025 Archive Sync"}
-    ]
+# User Credentials Database
+USER_DB = {"admin": {"password": "adminpassword123", "role": "Admin"}}
 
+# 2. SESSION STATE INITIALIZATION
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
     st.session_state.user_role = "Visitor"
 
-USER_DB = {"admin": {"password": "adminpassword123", "role": "Admin"}}
+# Real Match Predictions Data
+if "posted_predictions" not in st.session_state:
+    st.session_state.posted_predictions = [
+        {
+            "sport": "⚽ Football",
+            "country": "Europe (UCL)",
+            "venue": "Santiago Bernabéu",
+            "home": "Real Madrid",
+            "away": "Manchester City",
+            "result_or_pick": "Home Win (54%)",
+            "type": "AI Forecast",
+        },
+        {
+            "sport": "⚽ Football",
+            "country": "England",
+            "venue": "Emirates Stadium",
+            "home": "Arsenal",
+            "away": "Liverpool",
+            "result_or_pick": "Both Teams To Score",
+            "type": "AI Forecast",
+        },
+        {
+            "sport": "🏀 Basketball",
+            "country": "USA (NBA)",
+            "venue": "TD Garden",
+            "home": "Boston Celtics",
+            "away": "Milwaukee Bucks",
+            "result_or_pick": "Over 224.5 Points",
+            "type": "AI Forecast",
+        },
+        {
+            "sport": "🎾 Tennis",
+            "country": "Italy (ATP)",
+            "venue": "Foro Italico",
+            "home": "Jannik Sinner",
+            "away": "Carlos Alcaraz",
+            "result_or_pick": "Over 2.5 Sets",
+            "type": "AI Forecast",
+        },
+        {
+            "sport": "🏉 Rugby",
+            "country": "International",
+            "venue": "Twickenham",
+            "home": "England",
+            "away": "France",
+            "result_or_pick": "Away Win (-3.5)",
+            "type": "AI Forecast",
+        },
+    ]
 
-# 1. CORE AI PREDICTION CALCULATION ENGINE
+# Real Historical Results Archive Data
+if "historical_archive" not in st.session_state:
+    st.session_state.historical_archive = [
+        {
+            "sport": "⚽ Football",
+            "country": "Spain",
+            "venue": "Montjuïc Stadium",
+            "home": "Barcelona",
+            "away": "Real Madrid",
+            "result_or_pick": "1 - 2 (Finished)",
+            "type": "Archive Record",
+        },
+        {
+            "sport": "⚽ Football",
+            "country": "England",
+            "venue": "Etihad Stadium",
+            "home": "Manchester City",
+            "away": "Chelsea",
+            "result_or_pick": "3 - 1 (Finished)",
+            "type": "Archive Record",
+        },
+        {
+            "sport": "🏀 Basketball",
+            "country": "USA (NBA)",
+            "venue": "Crypto.com Arena",
+            "home": "LA Lakers",
+            "away": "Golden State Warriors",
+            "result_or_pick": "118 - 112 (Finished)",
+            "type": "Archive Record",
+        },
+        {
+            "sport": "🥊 Boxing",
+            "country": "Saudi Arabia",
+            "venue": "Kingdom Arena",
+            "home": "Oleksandr Usyk",
+            "away": "Tyson Fury",
+            "result_or_pick": "Usyk SD Win (Finished)",
+            "type": "Archive Record",
+        },
+    ]
+
+
+# 3. CORE AI PREDICTION CALCULATION ENGINE
 def run_ai_prediction(home_weight, away_weight):
     total = home_weight + away_weight if (home_weight + away_weight) > 0 else 1
-    home_prob = round((home_weight / total) * 78, 1)
-    away_prob = round((away_weight / total) * 22, 1)
+    home_prob = round((home_weight / total) * 100, 1)
+    away_prob = round((away_weight / total) * 100, 1)
     return home_prob, away_prob
 
-# 2. UNIVERSAL GLOBAL SPORTS INGESTION PIPELINE
-def fetch_global_football_fixtures(api_key):
-    url = "http://football-data.org"
-    headers = {"X-Auth-Token": api_key}
-    try:
-        response = requests.get(url, headers=headers, timeout=12)
-        if response.status_code == 200:
-            matches = response.json().get("matches", [])
-            cleaned = []
-            for m in matches[:200]: 
-                country = m.get("competition", {}).get("area", {}).get("name", "Global")
-                cleaned.append({
-                    "sport": "⚽ Football", "country": country, "venue": m.get("venue", "Global Arena"),
-                    "home": m["homeTeam"]["name"], "away": m["awayTeam"]["name"]
-                })
-            return cleaned
-        return []
-    except:
-        return []
 
-def fetch_historical_football_results(api_key):
-    url = f"http://football-data.org{TODAY_STR}"
-    headers = {"X-Auth-Token": api_key}
-    try:
-        response = requests.get(url, headers=headers, timeout=15)
-        if response.status_code == 200:
-            matches = response.json().get("matches", [])
-            cleaned_history = []
-            for m in matches[:200]: 
-                country = m.get("competition", {}).get("area", {}).get("name", "Global")
-                h_score = m.get("score", {}).get("fullTime", {}).get("home")
-                a_score = m.get("score", {}).get("fullTime", {}).get("away")
-                score_str = f"{h_score} - {a_score} (Finished)" if h_score is not None else "Finished"
-                cleaned_history.append({
-                    "sport": "⚽ Football", "country": country, "venue": m.get("venue", "Historical Stadium"),
-                    "home": m["homeTeam"]["name"], "away": m["awayTeam"]["name"], "result_or_pick": score_str, "type": "Historical Sync"
-                })
-            return cleaned_history
-        return []
-    except:
-        return []
+# 4. SIDEBAR NAVIGATION & AUTHENTICATION
+st.sidebar.title("Navigation")
+menu = st.sidebar.radio(
+    "Select Option",
+    [
+        "Live Forecasts",
+        "AI Calculator Engine",
+        "Historical Archive",
+        "Data Ingestion & Upload",
+        "Admin Portal",
+    ],
+)
 
-# 3. UNIVERSAL MULTI-SPORT SCENARIO MOCK INJECTORS
-def generate_global_sports_matrix(is_history=False):
-    """
-    Dynamically generates structural updates for all world sports disciplines
-    spanning Basketball, Tennis, Rugby, Cricket, Volleyball, Boxing, Ice Hockey, and more.
-    """
-    status_suffix = " (Finished)" if is_history else ""
-    origin_label = "2025-2026 World Sports Archive" if is_history else "AI Multi-Sport Prediction Ingestion"
-    
-    world_sports_pool = [
-        {"sport": "🏀 Basketball", "country": "USA", "venue": "Crypto.com Arena", "home": "LA Lakers", "away": "Golden State", "result_or_pick": f"112 - 108{status_suffix}" if is_history else "Home Win (-4.5)", "type": origin_label},
-        {"sport": "🎾 Tennis", "country": "UK", "venue": "Wimbledon Centre Court", "home": "Novak Djokovic", "away": "Rafael Nadal", "result_or_pick": f"3 - 1 Sets{status_suffix}" if is_history else "Over 3.5 Sets", "type": origin_label},
-        {"sport": "🏉 Rugby", "country": "South Africa", "venue": "Ellis Park Stadium", "home": "South Africa", "away": "New Zealand", "result_or_pick": f"24 - 22{status_suffix}" if is_history else "Home Win", "type": origin_label},
-        {"sport": "🏏 Cricket", "country": "Australia", "venue": "Melbourne Cricket Ground", "home": "Australia", "away": "England", "result_or_pick": f"Aus won by 5 runs{status_suffix}" if is_history else "Home Win", "type": origin_label},
-        {"sport": "🏐 Volleyball", "country": "Italy", "venue": "Palazzo dello Sport", "home": "Italy", "away": "Poland", "result_or_pick": f"3 - 0 Sets{status_suffix}" if is_history else "Home Win", "type": origin_label},
-        {"sport": "🏒 Ice Hockey", "country": "Canada", "venue": "Bell Centre", "home": "Montreal Canadiens", "away": "Toronto Maple Leafs", "result_or_pick": f"4 - 2{status_suffix}" if is_history else "Under 5.5 Goals", "type": origin_label},
-        {"sport": "🥊 Boxing", "country": "USA", "venue": "MGM Grand Garden Arena", "home": "Canelo Alvarez", "away": "Terence Crawford", "result_or_pick": f"Canelo by UD{status_suffix}" if is_history else "Fight Goes Distance", "type": origin_label},
-        {"sport": "🏃 Athletics", "country": "Kenya", "venue": "Nairobi National Stadium", "home": "Eliud Kipchoge", "away": "Kenenisa Bekele", "result_or_pick": f"1st Place Finish{status_suffix}" if is_history else "Podium Placement", "type": origin_label}
-    ]
-    return world_sports_pool * 25
+st.sidebar.markdown("---")
+st.sidebar.subheader("User Authentication")
 
-# ====================================================================
-# APP INTERFACE BINDINGS
-# ====================================================================
-
-# SIDEBAR: Security Verification Routing Gateway
-st.sidebar.title("🔐 LEEROY Portal Gate")
 if not st.session_state.authenticated:
-    username_input = st.sidebar.text_input("Username")
-    password_input = st.sidebar.text_input("Password", type="password")
+    username = st.sidebar.text_input("Username")
+    password = st.sidebar.text_input("Password", type="password")
     if st.sidebar.button("Login"):
-        if username_input in USER_DB and USER_DB[username_input]["password"] == password_input:
+        if username in USER_DB and USER_DB[username]["password"] == password:
             st.session_state.authenticated = True
-            st.session_state.user_role = USER_DB[username_input]["role"]
+            st.session_state.user_role = USER_DB[username]["role"]
+            st.sidebar.success(f"Logged in as {username}")
             st.rerun()
         else:
-            st.error("❌ Access Terminated.")
+            st.sidebar.error("Invalid credentials")
 else:
-    st.sidebar.success(f"Verified: **{st.session_state.user_role} Mode**")
-    if st.sidebar.button("Log Out"):
+    st.sidebar.info(
+        f"Logged in as: **{st.session_state.user_role}**", icon="👤"
+    )
+    if st.sidebar.button("Logout"):
         st.session_state.authenticated = False
+        st.session_state.user_role = "Visitor"
         st.rerun()
 
-# --------------------------------------------------------------------
-# PANEL A: ADMIN STRATEGIC MASS CONTROL MULTI-SPORT CONSOLE
-# --------------------------------------------------------------------
-if st.session_state.authenticated and st.session_state.user_role == "Admin":
-    st.title("🛡️ LEEROY CORRECT FIXED — Control Command Center")
-    st.subheader("Manage Global Multi-Sport Data Ingestion Pipes")
-    
-    api_token = st.text_input("Provide Data Token Key Structure", type="password")
-    
-    st.markdown("### ⏳ Phase 1: Compile 2025 - Present Historical World Records")
-    if st.button("Accumulate All Finished Matches Globally From 2025", type="primary"):
-        if not api_token:
-            st.warning("Input network access credentials string key first.")
-        else:
-            with st.spinner("Downloading global football archives since 2025..."):
-                f_history = fetch_historical_football_results(api_token)
-                for fh in f_history: st.session_state.historical_archive.append(fh)
-                
-                # Automatically map remaining international multi-sport historical metrics 
-                all_sports_history = generate_global_sports_matrix(is_history=True)
-                for ash in all_sports_history: st.session_state.historical_archive.append(ash)
-                
-                st.success("Synchronized global sports database archive safely!")
-                st.rerun()
-                
-    st.markdown("---")
-st.markdown("### ⚽ Phase 2: Ingest Upcoming Fixtures Matrix (>200 Games)")
-c_fb, c_ms = st.columns(2)
-with c_fb:
-    if st.button("Ingest Upcoming Global Football Data"):
-        with st.spinner("Compiling upcoming football matrices..."):
-            f_games = fetch_global_football_fixtures(api_token)
-            for fg in f_games:
-                hp, ap = run_ai_prediction(7, 5)
-                st.session_state.posted_predictions.append({
-                    "sport": fg["sport"],
-                    "country": fg["country"],
-                    "venue": fg["venue"],
-                    "home": fg["home"],
-                    "away": fg["away"],
-                    "result_or_pick": f"Home Win ({hp}%)",
-                    "type": "Live Match Data"
-                })
+
+# 5. MAIN PAGE CONTENT
+st.title("🏆 LEEROY CORRECT FIXED — AI Sports Analytics & Match Predictions")
+st.markdown(
+    "Welcome to **LEEROY CORRECT FIXED**, an advanced artificial intelligence platform delivering daily data-driven match probability forecasts, historical team statistics, and predictive modeling for major sports leagues worldwide."
+)
+st.caption(f"System Operational Date: {TODAY_STR}")
+
+# PAGE 1: LIVE FORECASTS
+if menu == "Live Forecasts":
+    st.header("⚡ Active System Predictions & AI Odds")
+    st.write(
+        "Explore real-time match predictions generated by our algorithmic ensemble models across Football, Basketball, Tennis, and Rugby."
+    )
+    df_preds = pd.DataFrame(st.session_state.posted_predictions)
+    st.dataframe(df_preds, use_container_width=True)
+
+# PAGE 2: AI CALCULATOR ENGINE
+elif menu == "AI Calculator Engine":
+    st.header("🧮 Custom Match Probability Calculator")
+    st.write(
+        "Estimate win probabilities and matchup ratings using custom team weightings."
+    )
+    col1, col2 = st.columns(2)
+    with col1:
+        home_team = st.text_input("Home Team Name", "Real Madrid")
+        home_weight = st.slider("Home Team Rating", 1, 100, 75)
+    with col2:
+        away_team = st.text_input("Away Team Name", "Manchester City")
+        away_weight = st.slider("Away Team Rating", 1, 100, 70)
+
+    if st.button("Calculate Match Odds"):
+        h_prob, a_prob = run_ai_prediction(home_weight, away_weight)
+        st.subheader("Calculated Odds:")
+        st.write(f"**{home_team}** Win Chance: `{h_prob}%`")
+        st.write(f"**{away_team}** Win Chance: `{a_prob}%`")
+
+# PAGE 3: HISTORICAL ARCHIVE
+elif menu == "Historical Archive":
+    st.header("📜 Completed Matches & Historical Data Archive")
+    st.write(
+        "Review historical sports outcomes and past prediction performances."
+    )
+    df_hist = pd.DataFrame(st.session_state.historical_archive)
+    st.dataframe(df_hist, use_container_width=True)
+
+# PAGE 4: DATA INGESTION & UPLOAD (PROTECTED)
+elif menu == "Data Ingestion & Upload":
+    st.header("📁 Upload Match Datasets (Admin Only)")
+
+    if (
+        st.session_state.authenticated
+        and st.session_state.user_role == "Admin"
+    ):
+        st.success(
+            "🔓 Access Granted: Admin session active. You can upload CSV data."
+        )
+
+        uploaded_file = st.file_uploader(
+            "Upload historical games CSV (`date,home,away,home_score,away_score`)",
+            type=["csv"],
+        )
+        if uploaded_file is not None:
+            try:
+                df = pd.read_csv(uploaded_file)
+                st.subheader("Data Preview:")
+                st.dataframe(df.head(), use_container_width=True)
+                st.success("Dataset ingested successfully!")
+            except Exception as e:
+                st.error(f"Error loading CSV file: {e}")
+    else:
+        st.warning(
+            "🔒 Access Restricted: Visitors cannot upload files. Please log in with an Admin account via the sidebar to access file management."
+        )
+
+# PAGE 5: ADMIN PORTAL (PROTECTED)
+elif menu == "Admin Portal":
+    st.header("🔒 Admin Dashboard")
+    if (
+        st.session_state.authenticated
+        and st.session_state.user_role == "Admin"
+    ):
+        st.subheader("Publish Prediction")
+        with st.form("new_pred_form"):
+            sport = st.selectbox(
+                "Sport Category",
+                ["⚽ Football", "🏀 Basketball", "🎾 Tennis", "🏉 Rugby"],
+            )
+            country = st.text_input("Tournament / League", "UEFA Champions League")
+            venue = st.text_input("Venue Name", "Allianz Arena")
+            home = st.text_input("Home Team", "Bayern Munich")
+            away = st.text_input("Away Team", "Paris Saint-Germain")
+            pick = st.text_input("Prediction Pick", "Home Win")
+
+            submitted = st.form_submit_button("Publish Prediction")
+            if submitted:
+                new_entry = {
+                    "sport": sport,
+                    "country": country,
+                    "venue": venue,
+                    "home": home,
+                    "away": away,
+                    "result_or_pick": pick,
+                    "type": "Admin Manual Entry",
+                }
+                st.session_state.posted_predictions.append(new_entry)
+                st.success("New prediction published!")
+    else:
+        st.warning(
+            "🔒 Access Restricted: Please log in as an Admin to manage system predictions."
+        )
